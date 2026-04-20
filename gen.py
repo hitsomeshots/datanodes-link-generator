@@ -23,7 +23,7 @@ async def get_fuckingfast_link(session, download_url):
         response_text = await response.text()
         soup = BeautifulSoup(response_text, "html.parser")
         scripts = soup.find_all("script")
-        pattern = re.compile(r'https://fuckingfast.co/dl/[a-zA-Z0-9_-]+')
+        pattern = re.compile(r'https://dl.fuckingfast.co/dl/[a-zA-Z0-9_-]+')
         for script in scripts:
             if script.string:
                 match = pattern.search(script.string)
@@ -48,10 +48,10 @@ async def get_datanodes_link(session, download_url):
         "op": "download2",
         "id": file_code,
         "rand": "",
-        "referer": "https://datanodes.to/download",
-        "method_free": "Free Download >>",
+        "referer": "",
+        "method_free": "",
         "method_premium": "",
-        "dl": 1
+        "g_captch__a": 1
     }
     async with session.post("https://datanodes.to/download", data=payload, headers=headers, allow_redirects=False) as response:
         response_data = await response.json()
