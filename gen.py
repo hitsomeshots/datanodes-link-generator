@@ -35,28 +35,23 @@ async def get_datanodes_link(session, download_url):
     parsed_url = urlparse(download_url)
     path_segments = parsed_url.path.split("/")
     file_code = path_segments[1].encode("latin-1", "ignore").decode("latin-1")
-    file_name = path_segments[-1].encode("latin-1", "ignore").decode("latin-1")
     headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Cookie": f"lang=english; file_name={file_name}; file_code={file_code};",
-        "Host": "datanodes.to",
-        "Origin": "https://datanodes.to",
-        "Referer": "https://datanodes.to/download",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
     }
     payload = {
         "op": "download2",
         "id": file_code,
         "rand": "",
-        "referer": "https://datanodes.to/download",
+        "referer": "",
         "method_free": "Free Download >>",
         "method_premium": "",
-        "dl": 1
+        "g_captch__a": "1",
     }
-    async with session.post("https://datanodes.to/download", data=payload, headers=headers, allow_redirects=False) as response:
-        response_data = await response.json()
-        download_url = unquote(response_data.get("url"))
-        return download_url
+    async with session.post(download_url, data=payload, headers=headers) as response:
+        response_data = await response.json(content_type=None)
+        url = response_data.get("url")
+        if url:
+            return unquote(url)
     return None
 
 async def process_links(urls):
